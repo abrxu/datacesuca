@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataCESUCA - Análise de Falhas</title>
+  </head>
+  <body>
+    <div id="app" class="container-fluid mt-3">
+      
+      <header class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
+        <div>
+          <h1 class="h3">DataCESUCA - Painel de Análise de Sistema</h1>
+          <p class="text-muted mb-0">Análise de dados de desempenho para identificação de falhas.</p>
+        </div>
+        <div class="d-flex align-items-center">
+          <button id="export-btn" class="btn btn-success btn-lg me-3">Exportar para Excel</button>
+          <button id="generate-btn" class="btn btn-primary btn-lg">Gerar e Analisar Dados</button>
+        </div>
+      </header>
+
+      <main>
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Eventos do Sistema (Dados Brutos)</h5>
+          </div>
+          <div class="card-body" style="max-height: 400px; overflow-y: auto;">
+            <div id="table-container">
+              <p class="text-muted">Clique no botão acima para gerar os dados do sistema.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+              <div class="card-header">
+                <h5>Análise Estatística (Tempos de Resposta)</h5>
+              </div>
+              <div id="results-output" class="card-body">
+                <p class="text-muted">Os resultados da análise aparecerão aqui.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-8">
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5>Visualização Estratégica</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <canvas id="chart"></canvas>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <canvas id="error-dist-chart"></canvas>
+                  </div>
+                  <div class="col-md-6">
+                    <canvas id="status-code-chart"></canvas>
+                  </div>
+                  <div class="col-md-6">
+                    <canvas id="scatter-plot-chart"></canvas>
+                  </div>
+                </div>
+                <hr class="my-4">
+                <div id="status-legend">
+                  <h5>Legenda de Status</h5>
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex align-items-center">
+                      <span class="badge bg-success-subtle border border-success-subtle text-success-emphasis rounded-pill me-2">2xx</span> Sucesso na operação (ex: 200 OK, 201 Created).
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                      <span class="badge bg-danger-subtle border border-danger-subtle text-danger-emphasis rounded-pill me-2">4xx</span> Erro do cliente (ex: 404 Not Found, 400 Bad Request).
+                    </li>
+                    <li class="list-group-item d-flex align-items-center">
+                      <span class="badge bg-danger-subtle border border-danger-subtle text-danger-emphasis rounded-pill me-2">5xx</span> Erro no servidor (ex: 500 Internal Server Error, 503 Service Unavailable).
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header">
+                <h5>Relatório de Inteligência</h5>
+              </div>
+              <div id="report-output" class="card-body">
+                <p class="text-muted">A interpretação dos dados e sugestões aparecerão aqui.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <section id="frequency-tables-section" class="mt-5">
+        <div class="card">
+          <div class="card-header">
+            <h3>Tabelas de Frequência</h3>
+          </div>
+          <div class="card-body">
+            <div id="frequency-tables-output" class="row"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="glossary-section" class="mt-5">
+        <div class="card">
+          <div class="card-header">
+            <h3>Entendendo as Métricas (Glossário)</h3>
+          </div>
+          <div class="card-body">
+            <dl class="row">
+              <dt class="col-sm-3">Tempo de Resposta (ms)</dt>
+              <dd class="col-sm-9">Mede quanto tempo (em milissegundos) o sistema leva para responder a uma requisição. Valores mais baixos indicam um sistema mais rápido e saudável.</dd>
+
+              <dt class="col-sm-3">Serviços</dt>
+              <dd class="col-sm-9">Um sistema de software é composto por várias partes que trabalham juntas, aqui chamadas de "serviços" (ex: API, Banco de Dados). Analisar o desempenho de cada um ajuda a isolar problemas.</dd>
+
+              <dt class="col-sm-3">Coeficiente de Variação (CV)</dt>
+              <dd class="col-sm-9">É uma medida de dispersão que indica a consistência dos dados. No nosso contexto, um CV baixo para os tempos de resposta significa que o sistema se comporta de maneira previsível e estável. Um CV alto sugere instabilidade.</dd>
+
+              <dt class="col-sm-3">Histograma vs. Gráfico de Barras</dt>
+              <dd class="col-sm-9">Ambos usam barras, mas o <strong>Histograma</strong> agrupa dados numéricos contínuos (como o tempo de resposta) em "classes" ou "faixas" para mostrar onde os valores se concentram. O <strong>Gráfico de Barras</strong> compara contagens de categorias distintas e separadas (como os diferentes serviços ou códigos de status).</dd>
+            </dl>
+          </div>
+        </div>
+      </section>
+
+      <footer class="text-center text-muted mt-5 mb-3">
+        <p>&copy; 2025 DataCESUCA</p>
+      </footer>
+
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
